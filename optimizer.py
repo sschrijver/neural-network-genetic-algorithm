@@ -1,141 +1,74 @@
-"""
-Class that holds a genetic algorithm for evolving a network.
-
-Credit:
-    A lot of those code was originally inspired by:
-    http://lethain.com/genetic-algorithms-cool-name-damn-simple/
-"""
 from functools import reduce
 from operator import add
 import random
-from network import Network
+from geneticmodel import GeneticModel
 
 class Optimizer():
-    """Class that implements genetic algorithm for MLP optimization."""
-
-    def __init__(self, nn_param_choices, retain=0.4,
+    def __init__(self, param_choices, retain=0.4,
                  random_select=0.1, mutate_chance=0.2):
-        """Create an optimizer.
-
-        Args:
-            nn_param_choices (dict): Possible network paremters
-            retain (float): Percentage of population to retain after
-                each generation
-            random_select (float): Probability of a rejected network
-                remaining in the population
-            mutate_chance (float): Probability a network will be
-                randomly mutated
-
-        """
+        
         self.mutate_chance = mutate_chance
         self.random_select = random_select
         self.retain = retain
-        self.nn_param_choices = nn_param_choices
+        self.param_choices = param_choices
 
     def create_population(self, count):
-        """Create a population of random networks.
-
-        Args:
-            count (int): Number of networks to generate, aka the
-                size of the population
-
-        Returns:
-            (list): Population of network objects
-
-        """
         pop = []
         for _ in range(0, count):
             # Create a random network.
-            network = Network(self.nn_param_choices)
-            network.create_random()
+            genetic_model = GeneticModel(self.param_choices)
+            genetic_model.create_random()
 
             # Add the network to our population.
-            pop.append(network)
+            pop.append(genetic_model)
 
         return pop
 
     @staticmethod
-    def fitness(network):
-        """Return the accuracy, which is our fitness function."""
-        return network.accuracy
+    def fitness(genetic_model):
+        return genetic_model.accuracy
 
     def grade(self, pop):
-        """Find average fitness for a population.
-
-        Args:
-            pop (list): The population of networks
-
-        Returns:
-            (float): The average accuracy of the population
-
-        """
-        summed = reduce(add, (self.fitness(network) for network in pop))
+        summed = reduce(add, (self.fitness(genetic_model) for genetic_model in pop))
         return summed / float((len(pop)))
 
     def breed(self, mother, father):
-        """Make two children as parts of their parents.
-
-        Args:
-            mother (dict): Network parameters
-            father (dict): Network parameters
-
-        Returns:
-            (list): Two network objects
-
-        """
         children = []
         for _ in range(2):
 
             child = {}
 
-            # Loop through the parameters and pick params for the kid.
-            for param in self.nn_param_choices:
+            for param in self.param_choices:
                 child[param] = random.choice(
-                    [mother.network[param], father.network[param]]
+                    [mother.genetic_model_settings[param],
+                     father.genetic_model_settings[param]]
                 )
 
             # Now create a network object.
-            network = Network(self.nn_param_choices)
-            network.create_set(child)
+            genetic_model = GeneticModel(self.param_choices)
+            genetic_model.create_set(child)
 
             # Randomly mutate some of the children.
             if self.mutate_chance > random.random():
-                network = self.mutate(network)
+                genetic_model = self.mutate(genetic_model)
 
-            children.append(network)
+            children.append(genetic_model)
 
         return children
 
-    def mutate(self, network):
-        """Randomly mutate one part of the network.
-
-        Args:
-            network (dict): The network parameters to mutate
-
-        Returns:
-            (Network): A randomly mutated network object
-
-        """
+    def mutate(self, genetic_model):
         # Choose a random key.
-        mutation = random.choice(list(self.nn_param_choices.keys()))
+        mutation = random.choice(list(self.param_choices.keys()))
 
         # Mutate one of the params.
-        network.network[mutation] = random.choice(self.nn_param_choices[mutation])
+        genetic_model.genetic_model_settings[mutation] = random.choice(self.param_choices[mutation])
 
-        return network
+        return genetic_model
 
     def evolve(self, pop):
-        """Evolve a population of networks.
-
-        Args:
-            pop (list): A list of network parameters
-
-        Returns:
-            (list): The evolved population of networks
-
-        """
         # Get scores for each network.
-        graded = [(self.fitness(network), network) for network in pop]
+        graded = [(self.fitness(genetic_model), genetic_model) 
+                  for genetic_model in pop]
 
         # Sort on the scores.
         graded = [x[1] for x in sorted(graded, key=lambda x: x[0], reverse=True)]
