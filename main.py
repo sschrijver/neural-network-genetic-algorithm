@@ -1,7 +1,8 @@
 """Entry point to evolving the neural network. Start here."""
 import logging
-from optimizer import Optimizer
 from tqdm import tqdm
+from optimizer import Optimizer
+
 
 # Setup logging.
 logging.basicConfig(
@@ -55,8 +56,9 @@ def generate(generations, population, nn_param_choices, dataset):
 
     # Evolve the generation.
     for i in range(generations):
-        logging.info("***Doing generation %d of %d***" %
-                     (i + 1, generations))
+        logging.info("HEEEEY")
+        logging.info("***Doing generation %d of %d***", (i + 1), generations)
+
 
         # Train and get accuracy for networks.
         train_networks(networks, dataset)
@@ -65,7 +67,7 @@ def generate(generations, population, nn_param_choices, dataset):
         average_accuracy = get_average_accuracy(networks)
 
         # Print out the average accuracy each generation.
-        logging.info("Generation average: %.2f%%" % (average_accuracy * 100))
+        logging.info("Generation average: %d.2f %%", (average_accuracy * 100))
         logging.info('-'*80)
 
         # Evolve, except on the last iteration.
@@ -104,8 +106,8 @@ def main():
                       'adadelta', 'adamax', 'nadam'],
     }
 
-    logging.info("***Evolving %d generations with population %d***" %
-                 (generations, population))
+    logging.info("***Evolving %d generations with population %d***",
+                 generations, population)
 
     generate(generations, population, nn_param_choices, dataset)
 

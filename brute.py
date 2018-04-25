@@ -1,7 +1,8 @@
 """Iterate over every combination of hyperparameters."""
 import logging
-from network import Network
 from tqdm import tqdm
+from network import Network
+
 
 # Setup logging.
 logging.basicConfig(
@@ -57,15 +58,15 @@ def generate_network_list(nn_param_choices):
     # This is silly.
     for nbn in nn_param_choices['nb_neurons']:
         for nbl in nn_param_choices['nb_layers']:
-            for a in nn_param_choices['activation']:
-                for o in nn_param_choices['optimizer']:
+            for activation in nn_param_choices['activation']:
+                for optimizer in nn_param_choices['optimizer']:
 
                     # Set the parameters.
                     network = {
                         'nb_neurons': nbn,
                         'nb_layers': nbl,
-                        'activation': a,
-                        'optimizer': o,
+                        'activation': activation,
+                        'optimizer': optimizer,
                     }
 
                     # Instantiate a network object with set parameters.
