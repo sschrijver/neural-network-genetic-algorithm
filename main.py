@@ -106,8 +106,8 @@ def main():
                       'adadelta', 'adamax', 'nadam'],
     }
 
-    logging.info("***Evolving %d generations with population %d***", generations, population)
-
+    logging.info("***Evolving %d generations with population %d***",
+                 generations, population)
 
     generate(generations, population, nn_param_choices, dataset)
 
