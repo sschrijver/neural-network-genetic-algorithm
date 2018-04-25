@@ -1,15 +1,9 @@
-# Evolve a neural network with a genetic algorithm
+# Evolve XGBRegressor with a genetic algorithm
 
-This is an example of how we can use a genetic algorithm in an attempt to find the optimal network parameters for classification tasks.
+This is an example of how we can use a genetic algorithm in an attempt to find the optimal extreme gradient boosting parameters for classification tasks.
 
-It's currently limited to only MLPs (ie. fully connected networks) and uses the Keras library to build, train and validate.
-
-On the easy MNIST dataset, we are able to quickly find a network that reaches > 98% accuracy. On the more challenging CIFAR10 dataset, we get to 56% after 10 generations (with population 20).
-
-For more, see this blog post: 
-https://medium.com/@harvitronix/lets-evolve-a-neural-network-with-a-genetic-algorithm-code-included-8809bece164
-
-For a more robust implementation that you can use in your projects, take a look at [Jan Liphardt's implementation, DeepEvolve](https://github.com/jliphard/DeepEvolve).
+This code is based upon an repository that used an genetic algorithm to evolve a neural network.
+That repository can be found [here](https://github.com/harvitronix/neural-network-genetic-algorithm).  
 
 ## To run
 
